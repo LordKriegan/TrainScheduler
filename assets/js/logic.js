@@ -30,7 +30,7 @@ database.ref("trains").on("value", function(snapshot) {
     ntt.add(key.freq, "m");
    } while (ntt.isBefore(currTime));
 
-   var minAway = String(Math.floor(((ntt.toDate() - moment().toDate())/1000)/60));
+   var minAway = String(Math.floor(((ntt.toDate() - currTime.toDate())/1000)/60));
 
    $("#trainTable").append(`
       <tr>
