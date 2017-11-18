@@ -21,14 +21,11 @@ database.ref("trains").on("value", function(snapshot) {
         <th>Minutes Away</th>
     </tr>
     `)
+  var currTime = moment();
   snapshot.forEach(function(childSnapshot) {
-   //Here you can access  childSnapshot.key
    var key = childSnapshot.val();
    var ntt = moment(key.ftt, ["HH:mm"]);
-   var currTime = moment();
-   // while (nextArrival.isBefore(ftt)) {
-   //  nextArrival.add(key.freq, "m");
-   // } 
+ 
    do {
     ntt.add(key.freq, "m");
    } while (ntt.isBefore(currTime));
