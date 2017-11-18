@@ -11,23 +11,36 @@ firebase.initializeApp(config);
 database = firebase.database();
 
 database.ref("trains").on("value", function(snapshot) {
+  $("#trainTable").empty();
+  $("#trainTable").append(`
+    <tr>
+        <th>Train Name</th>
+        <th>Destination</th>
+        <th>Frequency (min)</th>
+        <th>Next Arrival</th>
+        <th>Minutes Away</th>
+    </tr>
+    `)
   snapshot.forEach(function(childSnapshot) {
    //Here you can access  childSnapshot.key
    var key = childSnapshot.val();
-   var ftt = moment(key.ftt, ["HH:mm"]);
-   var nextArrival = moment()
-   while (nextArrival.isBefore(ftt)) {
-    nextArrival.add(key.freq, "m");
-   } 
+   var ntt = moment(key.ftt, ["HH:mm"]);
+   var currTime = moment();
+   // while (nextArrival.isBefore(ftt)) {
+   //  nextArrival.add(key.freq, "m");
+   // } 
+   do {
+    ntt.add(key.freq, "m");
+   } while (ntt.isBefore(currTime));
 
-   var minAway = moment((nextArrival.toDate() - moment().toDate()), ["mm"]).minute();
-   nextArrival = nextArrival.hour() + ":" + nextArrival.minute();
+   var minAway = String(Math.floor(((ntt.toDate() - moment().toDate())/1000)/60));
+
    $("#trainTable").append(`
       <tr>
         <td>${key.name}</td>
         <td>${key.dest}</td>
         <td>${key.freq}</td>
-        <td>${nextArrival}</td>
+        <td>${ntt.format("HH:mm")}</td>
         <td>${minAway}</td>
       </tr>
     `)
